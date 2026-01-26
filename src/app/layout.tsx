@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,25 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Landing Page | Built with create-next-landing",
+  title: "Web App | Built with create-next-app",
   description:
-    "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
-  keywords: ["landing page", "nextjs", "react", "tailwind", "shadcn"],
+    "A modern web app built with Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, Better Auth, and Prisma.",
+  keywords: ["web app", "nextjs", "react", "tailwind", "shadcn", "better-auth", "prisma"],
   authors: [{ name: "nimbuslab", url: "https://nimbuslab.com.br" }],
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    title: "Landing Page | Built with create-next-landing",
-    description:
-      "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
-    siteName: "Your Site Name",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Landing Page | Built with create-next-landing",
-    description:
-      "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
-  },
 };
 
 export default function RootLayout({
@@ -40,11 +27,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
