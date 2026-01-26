@@ -2,8 +2,9 @@
 
 import * as p from "@clack/prompts";
 import pc from "picocolors";
-import { readFile, writeFile, access } from "node:fs/promises";
+import { readFile, writeFile, access, mkdir } from "node:fs/promises";
 import { $ } from "bun";
+import { AI_CONFIGS, type AIProvider } from "./ai-configs";
 
 const ENV_TEMPLATE = `# Database
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app?schema=public"
@@ -49,6 +50,17 @@ async function main() {
             { value: "system", label: "System", hint: "follows OS preference" },
           ],
         }),
+      aiAssistant: () =>
+        p.select({
+          message: "Which AI assistant do you use?",
+          options: [
+            { value: "claude", label: "Claude Code", hint: "Anthropic" },
+            { value: "cursor", label: "Cursor", hint: "AI-first editor" },
+            { value: "copilot", label: "GitHub Copilot" },
+            { value: "windsurf", label: "Windsurf", hint: "Codeium" },
+            { value: "none", label: "None", hint: "skip AI config" },
+          ],
+        }),
       startDocker: () =>
         p.confirm({
           message: "Start PostgreSQL with Docker?",
@@ -92,6 +104,26 @@ async function main() {
     s.stop("Error configuring theme");
   }
 
+  // Generate AI config
+  if (config.aiAssistant !== "none") {
+    s.start(`Generating ${config.aiAssistant} config...`);
+    try {
+      const aiConfig = AI_CONFIGS[config.aiAssistant as AIProvider];
+      const content = aiConfig.content("app");
+
+      // Create directory if needed (for copilot)
+      if (aiConfig.filename.includes("/")) {
+        const dir = aiConfig.filename.split("/").slice(0, -1).join("/");
+        await mkdir(dir, { recursive: true });
+      }
+
+      await writeFile(aiConfig.filename, content);
+      s.stop(`${aiConfig.filename} created`);
+    } catch {
+      s.stop("Error generating AI config");
+    }
+  }
+
   // Create .env if not exists
   s.start("Checking .env...");
   if (!(await fileExists(".env"))) {
@@ -129,7 +161,7 @@ async function main() {
     await $`bunx prisma migrate dev --name init`.quiet();
     s.stop("Migrations complete");
   } catch {
-    s.stop("Error running migrations");
+    s.stop("Error running migrations (is DB running?)");
   }
 
   // Seed demo user
