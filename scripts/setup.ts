@@ -26,6 +26,38 @@ async function fileExists(path: string): Promise<boolean> {
   }
 }
 
+async function checkGitHubCli(): Promise<{
+  installed: boolean;
+  authenticated: boolean;
+  username: string | null;
+  orgs: string[];
+}> {
+  try {
+    // Check if gh is installed
+    const ghVersion = await $`gh --version`.quiet().nothrow();
+    if (ghVersion.exitCode !== 0) {
+      return { installed: false, authenticated: false, username: null, orgs: [] };
+    }
+
+    // Check if authenticated
+    const authStatus = await $`gh auth status`.quiet().nothrow();
+    if (authStatus.exitCode !== 0) {
+      return { installed: true, authenticated: false, username: null, orgs: [] };
+    }
+
+    // Get username
+    const username = (await $`gh api user --jq '.login'`.quiet().text()).trim();
+
+    // Get user's organizations
+    const orgsJson = await $`gh api user/orgs --jq '.[].login'`.quiet().text();
+    const orgs = orgsJson.trim().split("\n").filter(Boolean);
+
+    return { installed: true, authenticated: true, username, orgs };
+  } catch {
+    return { installed: false, authenticated: false, username: null, orgs: [] };
+  }
+}
+
 async function main() {
   console.log();
   console.log(pc.cyan("  create-next-app setup"));
@@ -172,6 +204,81 @@ async function main() {
     s.stop("Demo user created");
   } catch {
     s.stop("Error creating demo user");
+  }
+
+  // GitHub repository setup
+  s.start("Checking GitHub CLI...");
+  const gh = await checkGitHubCli();
+
+  if (!gh.installed) {
+    s.stop(pc.dim("GitHub CLI not found (skipping repo setup)"));
+  } else if (!gh.authenticated) {
+    s.stop(pc.dim("GitHub CLI not authenticated (skipping repo setup)"));
+  } else {
+    s.stop(`GitHub CLI ready (${gh.username})`);
+
+    const createRepo = await p.confirm({
+      message: "Create GitHub repository?",
+      initialValue: false,
+    });
+
+    if (p.isCancel(createRepo)) {
+      p.cancel("Setup cancelled");
+      process.exit(0);
+    }
+
+    if (createRepo) {
+      // Build options: personal account + user's orgs
+      const repoOptions: { value: string; label: string; hint?: string }[] = [
+        { value: gh.username!, label: gh.username!, hint: "personal account" },
+        ...gh.orgs.map((org) => ({ value: org, label: org })),
+      ];
+
+      const repoOwner = await p.select({
+        message: "Where to create the repository?",
+        options: repoOptions,
+      });
+
+      if (p.isCancel(repoOwner)) {
+        p.cancel("Setup cancelled");
+        process.exit(0);
+      }
+
+      const repoVisibility = await p.select({
+        message: "Repository visibility:",
+        options: [
+          { value: "private", label: "Private", hint: "recommended" },
+          { value: "public", label: "Public" },
+        ],
+      });
+
+      if (p.isCancel(repoVisibility)) {
+        p.cancel("Setup cancelled");
+        process.exit(0);
+      }
+
+      s.start("Creating GitHub repository...");
+      try {
+        const repoName = config.name as string;
+        const owner = repoOwner as string;
+        const visibility = repoVisibility as string;
+        const isPersonal = owner === gh.username;
+
+        // Remove existing origin if any
+        await $`git remote remove origin`.quiet().nothrow();
+
+        // Create repo
+        if (isPersonal) {
+          await $`gh repo create ${repoName} --${visibility} --source=. --remote=origin`.quiet();
+        } else {
+          await $`gh repo create ${owner}/${repoName} --${visibility} --source=. --remote=origin`.quiet();
+        }
+
+        s.stop(`Repository created: ${pc.cyan(`github.com/${owner}/${repoName}`)}`);
+      } catch {
+        s.stop(pc.red("Error creating repository"));
+      }
+    }
   }
 
   p.outro(pc.green("Setup complete!"));
