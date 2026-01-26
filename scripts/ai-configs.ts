@@ -164,6 +164,76 @@ Commands:
 ${projectType === "app" ? "- bun setup (first time)" : ""}
 `,
   },
+
+  gemini: {
+    filename: ".gemini/GEMINI.md",
+    content: (projectType: "landing" | "app" | "turborepo") => `# ${projectType === "landing" ? "create-next-landing" : projectType === "app" ? "create-next-app" : "create-turborepo"}
+
+${getProjectDescription(projectType)}
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **React:** 19 (Server Components)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS 4 (CSS-first)
+- **Components:** shadcn/ui (default style)
+- **Package Manager:** Bun
+${projectType === "app" ? "- **Auth:** Better Auth\n- **Database:** PostgreSQL + Prisma" : ""}
+
+## Code Patterns
+
+### Server Components (Default)
+\`\`\`tsx
+// src/components/hero.tsx
+export function Hero() {
+  return <section>...</section>
+}
+\`\`\`
+
+### Client Components (When Needed)
+\`\`\`tsx
+"use client"
+// Only for: hooks, browser APIs, event handlers
+\`\`\`
+
+### Styling with Tailwind
+\`\`\`tsx
+import { cn } from "@/lib/utils"
+
+<div className={cn("base-classes", conditional && "extra")} />
+\`\`\`
+
+## Project Structure
+
+${getStructureInfo(projectType)}
+
+## Commands
+
+\`\`\`bash
+bun dev          # Start development
+bun build        # Production build
+bun lint         # Run ESLint
+${projectType === "app" ? "bun db:migrate   # Run migrations\nbun db:studio    # Open Prisma Studio" : ""}
+\`\`\`
+
+## Conventions
+
+- Use \`bun\` for all package operations
+- Components in PascalCase
+- Server Components by default
+- Dark mode first design
+- Use \`cn()\` for conditional classes
+- Add shadcn components: \`bunx --bun shadcn@latest add [component]\`
+
+## Resources
+
+- [Next.js Docs](https://nextjs.org/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [shadcn/ui](https://ui.shadcn.com)
+${projectType === "app" ? "- [Better Auth](https://better-auth.com)\n- [Prisma](https://prisma.io/docs)" : ""}
+`,
+  },
 };
 
 function getProjectDescription(type: "landing" | "app" | "turborepo"): string {

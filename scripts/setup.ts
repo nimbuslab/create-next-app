@@ -56,6 +56,7 @@ async function main() {
           options: [
             { value: "claude", label: "Claude Code", hint: "Anthropic" },
             { value: "cursor", label: "Cursor", hint: "AI-first editor" },
+            { value: "gemini", label: "Gemini CLI", hint: "Google" },
             { value: "copilot", label: "GitHub Copilot" },
             { value: "windsurf", label: "Windsurf", hint: "Codeium" },
             { value: "none", label: "None", hint: "skip AI config" },
