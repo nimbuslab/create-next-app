@@ -75,19 +75,10 @@ async function main() {
     }
   }
 
-  // Generate Prisma client
-  s.start("Generating Prisma client...");
-  try {
-    await $`bunx prisma generate`.quiet();
-    s.stop("Prisma client generated");
-  } catch {
-    s.stop("Error generating Prisma client");
-  }
-
-  // Run migrations
+  // Run Drizzle migrations
   s.start("Running database migrations...");
   try {
-    await $`bunx prisma migrate dev --name init`.quiet();
+    await $`bunx drizzle-kit push`.quiet();
     s.stop("Migrations complete");
   } catch {
     s.stop("Error running migrations (is DB running?)");

@@ -1,45 +1,45 @@
 #!/usr/bin/env bun
 
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db } from "../src/db";
+import { user, account } from "../src/db/schema";
+import { eq } from "drizzle-orm";
+import { hashPassword } from "better-auth/crypto";
+import { randomUUID } from "crypto";
 
 async function main() {
   // Check if demo user already exists
-  const existingUser = await prisma.user.findUnique({
-    where: { email: "demo@example.com" },
-  });
+  const existingUser = await db
+    .select()
+    .from(user)
+    .where(eq(user.email, "demo@example.com"))
+    .limit(1);
 
-  if (existingUser) {
+  if (existingUser.length > 0) {
     console.log("Demo user already exists");
     return;
   }
 
-  // Create demo user with Better Auth compatible password hash
-  // Password: demo1234
-  const hashedPassword = await Bun.password.hash("demo1234", {
-    algorithm: "bcrypt",
-    cost: 10,
+  // Hash password using Better Auth's scrypt
+  const hashedPassword = await hashPassword("demo1234");
+
+  const userId = randomUUID();
+
+  await db.insert(user).values({
+    id: userId,
+    email: "demo@example.com",
+    name: "Demo User",
+    emailVerified: true,
   });
 
-  await prisma.user.create({
-    data: {
-      email: "demo@example.com",
-      name: "Demo User",
-      emailVerified: true,
-      accounts: {
-        create: {
-          accountId: "demo-account",
-          providerId: "credential",
-          password: hashedPassword,
-        },
-      },
-    },
+  await db.insert(account).values({
+    id: randomUUID(),
+    accountId: "demo-account",
+    providerId: "credential",
+    userId: userId,
+    password: hashedPassword,
   });
 
   console.log("Demo user created successfully");
 }
 
-main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect());
+main().catch(console.error);
