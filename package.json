@@ -1,0 +1,69 @@
+{
+  "name": "@nimbuslab/create-next-app",
+  "version": "0.1.0",
+  "description": "Create full-stack web apps with Next.js 16, Better Auth, Prisma, and shadcn/ui",
+  "license": "MIT",
+  "author": {
+    "name": "nimbuslab",
+    "email": "contato@nimbuslab.com.br",
+    "url": "https://nimbuslab.com.br"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nimbuslab/create-next-app.git"
+  },
+  "homepage": "https://github.com/nimbuslab/create-next-app#readme",
+  "bugs": {
+    "url": "https://github.com/nimbuslab/create-next-app/issues"
+  },
+  "keywords": [
+    "nextjs",
+    "react",
+    "tailwindcss",
+    "shadcn",
+    "better-auth",
+    "prisma",
+    "template",
+    "starter",
+    "full-stack"
+  ],
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.10.0",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-slot": "^1.2.4",
+    "better-auth": "^1.3.10",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.563.0",
+    "next": "16.1.5",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwind-merge": "^3.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.5",
+    "prisma": "^6.10.0",
+    "tailwindcss": "^4",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
