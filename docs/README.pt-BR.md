@@ -9,7 +9,7 @@ Template full-stack pronto para producao com autenticacao, banco de dados e ferr
 - **Next.js 16** - App Router, Server Components, Turbopack
 - **React 19** - Recursos mais recentes e melhorias de performance
 - **Better Auth** - Autenticacao moderna (email/senha, OAuth ready)
-- **Prisma** - ORM de banco de dados com tipagem
+- **Drizzle** - ORM de banco de dados com tipagem
 - **PostgreSQL** - Banco de dados pronto para producao
 - **Tailwind CSS 4** - CSS utilitario
 - **shadcn/ui** - Componentes acessiveis e customizaveis
@@ -25,20 +25,15 @@ bunx @nimbuslab/create-next-app meu-app
 # Navegar para o projeto
 cd meu-app
 
-# Copiar variaveis de ambiente
+# Executar setup interativo (recomendado)
+bun setup
+
+# Ou setup manual:
 cp .env.example .env
-
-# Iniciar banco de dados
 docker compose up -d
-
-# Instalar dependencias
 bun install
-
-# Gerar cliente Prisma
-bun db:generate
-
-# Aplicar schema no banco
 bun db:push
+bun seed
 
 # Iniciar servidor de desenvolvimento
 bun dev
@@ -58,12 +53,14 @@ src/
 ├── components/
 │   ├── landing/          # Secoes da landing page
 │   └── ui/               # Componentes shadcn/ui
+├── db/
+│   ├── schema.ts         # Schema Drizzle
+│   └── index.ts          # Conexao com banco
 └── lib/
     ├── auth.ts           # Config servidor Better Auth
     ├── auth-client.ts    # Client Better Auth
     └── utils.ts
-prisma/
-└── schema.prisma         # Schema do banco de dados
+drizzle.config.ts         # Configuracao Drizzle
 ```
 
 ## Scripts Disponiveis
@@ -74,10 +71,11 @@ bun build         # Build para producao
 bun start         # Iniciar servidor de producao
 bun lint          # Executar ESLint
 bun typecheck     # Verificar tipos com TypeScript
-bun db:generate   # Gerar cliente Prisma
+bun setup         # Setup interativo do projeto
+bun seed          # Popular banco com usuario demo
 bun db:push       # Aplicar schema no banco
 bun db:migrate    # Executar migrations
-bun db:studio     # Abrir Prisma Studio
+bun db:studio     # Abrir Drizzle Studio
 ```
 
 ## Autenticacao
@@ -120,8 +118,7 @@ bun db:studio
 ### Alteracoes no Schema
 
 ```bash
-# Apos editar prisma/schema.prisma
-bun db:generate  # Regenerar client
+# Apos editar src/db/schema.ts
 bun db:push      # Aplicar no banco (dev)
 bun db:migrate   # Criar migration (prod)
 ```

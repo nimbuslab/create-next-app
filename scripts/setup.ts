@@ -7,7 +7,7 @@ import { $ } from "bun";
 import { AI_CONFIGS, type AIProvider } from "./ai-configs";
 
 const ENV_TEMPLATE = `# Database
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app"
 
 # Better Auth
 BETTER_AUTH_SECRET="your-secret-key-change-in-production"
@@ -146,19 +146,10 @@ async function main() {
     }
   }
 
-  // Generate Prisma client
-  s.start("Generating Prisma client...");
-  try {
-    await $`bunx prisma generate`.quiet();
-    s.stop("Prisma client generated");
-  } catch {
-    s.stop("Error generating Prisma client");
-  }
-
-  // Run migrations
+  // Run Drizzle migrations
   s.start("Running database migrations...");
   try {
-    await $`bunx prisma migrate dev --name init`.quiet();
+    await $`bunx drizzle-kit push`.quiet();
     s.stop("Migrations complete");
   } catch {
     s.stop("Error running migrations (is DB running?)");

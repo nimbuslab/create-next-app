@@ -50,7 +50,7 @@ bunx --bun shadcn@latest add card
 - [Next.js Docs](https://nextjs.org/docs)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [shadcn/ui](https://ui.shadcn.com)
-${projectType === "app" ? "- [Better Auth](https://better-auth.com)\n- [Prisma](https://prisma.io/docs)" : ""}
+${projectType === "app" ? "- [Better Auth](https://better-auth.com)\n- [Drizzle](https://orm.drizzle.team)" : ""}
 `,
   },
 
@@ -67,7 +67,7 @@ You are an expert in Next.js 16, React 19, TypeScript, Tailwind CSS 4, and shadc
 - Tailwind CSS 4 (CSS-first configuration)
 - shadcn/ui components (default style)
 - Bun as package manager
-${projectType === "app" ? "- Better Auth for authentication\n- Prisma ORM with PostgreSQL" : ""}
+${projectType === "app" ? "- Better Auth for authentication\n- Drizzle ORM with PostgreSQL" : ""}
 
 ## Code Style
 - Use functional components with TypeScript
@@ -80,13 +80,13 @@ ${projectType === "app" ? "- Better Auth for authentication\n- Prisma ORM with P
 - Components in src/components/
 - Pages in src/app/
 - Utilities in src/lib/
-${projectType === "app" ? "- Auth config in src/lib/auth.ts" : ""}
+${projectType === "app" ? "- Auth config in src/lib/auth.ts\n- Database schema in src/db/schema.ts" : ""}
 
 ## Commands
 - bun dev - Start development
 - bun build - Production build
 - bun lint - Run ESLint
-${projectType === "app" ? "- bun db:migrate - Run migrations\n- bun db:studio - Open Prisma Studio" : ""}
+${projectType === "app" ? "- bun db:push - Push schema to DB\n- bun db:studio - Open Drizzle Studio" : ""}
 
 ## Preferences
 - Dark mode first design
@@ -111,7 +111,7 @@ ${getProjectDescription(projectType)}
 - Tailwind CSS 4
 - shadcn/ui
 - Bun
-${projectType === "app" ? "- Better Auth\n- Prisma + PostgreSQL" : ""}
+${projectType === "app" ? "- Better Auth\n- Drizzle + PostgreSQL" : ""}
 
 ## Coding Standards
 - Use TypeScript strict mode
@@ -141,7 +141,7 @@ ${projectType === "app" ? "- Better Auth\n- Prisma + PostgreSQL" : ""}
 Project: ${projectType === "landing" ? "Landing Page" : projectType === "app" ? "Web App" : "Monorepo"}
 
 Stack: Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Bun
-${projectType === "app" ? "Auth: Better Auth | DB: Prisma + PostgreSQL" : ""}
+${projectType === "app" ? "Auth: Better Auth | DB: Drizzle + PostgreSQL" : ""}
 
 Style:
 - Server Components by default
@@ -155,7 +155,7 @@ Structure:
 - src/components/ - React components
 - src/components/ui/ - shadcn components
 - src/lib/ - Utilities
-${projectType === "app" ? "- prisma/ - Database schema" : ""}
+${projectType === "app" ? "- src/db/ - Database schema (Drizzle)" : ""}
 
 Commands:
 - bun dev
@@ -171,7 +171,7 @@ function getProjectDescription(type: "landing" | "app" | "turborepo"): string {
     case "landing":
       return "Modern landing page template with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.";
     case "app":
-      return "Full-stack web app template with Next.js 16, Better Auth, Prisma, and shadcn/ui.";
+      return "Full-stack web app template with Next.js 16, Better Auth, Drizzle, and shadcn/ui.";
     case "turborepo":
       return "Monorepo template with Turborepo, Next.js 16, and shared packages.";
   }
@@ -188,7 +188,7 @@ function getStackInfo(type: "landing" | "app" | "turborepo"): string {
   if (type === "app") {
     return base + `
 - **Auth:** Better Auth
-- **Database:** PostgreSQL + Prisma`;
+- **Database:** PostgreSQL + Drizzle`;
   }
   if (type === "turborepo") {
     return base + `
@@ -221,11 +221,13 @@ src/
 │   └── dashboard/
 ├── components/
 │   └── ui/
+├── db/
+│   ├── schema.ts
+│   └── index.ts
 └── lib/
     ├── auth.ts
     └── auth-client.ts
-prisma/
-└── schema.prisma
+drizzle.config.ts
 \`\`\``;
   }
   return `\`\`\`

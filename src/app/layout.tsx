@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Web App | Built with create-next-app",
   description:
-    "A modern web app built with Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, Better Auth, and Prisma.",
-  keywords: ["web app", "nextjs", "react", "tailwind", "shadcn", "better-auth", "prisma"],
+    "A modern web app built with Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, Better Auth, and Drizzle.",
+  keywords: ["web app", "nextjs", "react", "tailwind", "shadcn", "better-auth", "drizzle"],
   authors: [{ name: "nimbuslab", url: "https://nimbuslab.com.br" }],
 };
 

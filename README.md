@@ -9,7 +9,7 @@ A production-ready full-stack template with authentication, database, and modern
 - **Next.js 16** - App Router, Server Components, Turbopack
 - **React 19** - Latest features and performance improvements
 - **Better Auth** - Modern authentication (email/password, OAuth ready)
-- **Prisma** - Type-safe database ORM
+- **Drizzle** - Type-safe database ORM
 - **PostgreSQL** - Production-ready database
 - **Tailwind CSS 4** - Utility-first CSS
 - **shadcn/ui** - Accessible, customizable components
@@ -25,20 +25,15 @@ bunx @nimbuslab/create-next-app my-app
 # Navigate to project
 cd my-app
 
-# Copy environment variables
+# Run interactive setup (recommended)
+bun setup
+
+# Or manual setup:
 cp .env.example .env
-
-# Start database
 docker compose up -d
-
-# Install dependencies
 bun install
-
-# Generate Prisma client
-bun db:generate
-
-# Push database schema
 bun db:push
+bun seed
 
 # Start development server
 bun dev
@@ -58,12 +53,14 @@ src/
 ├── components/
 │   ├── landing/          # Landing page sections
 │   └── ui/               # shadcn/ui components
+├── db/
+│   ├── schema.ts         # Drizzle schema
+│   └── index.ts          # Database connection
 └── lib/
     ├── auth.ts           # Better Auth server config
     ├── auth-client.ts    # Better Auth client
     └── utils.ts
-prisma/
-└── schema.prisma         # Database schema
+drizzle.config.ts         # Drizzle configuration
 ```
 
 ## Available Scripts
@@ -74,10 +71,11 @@ bun build         # Build for production
 bun start         # Start production server
 bun lint          # Run ESLint
 bun typecheck     # Type check with TypeScript
-bun db:generate   # Generate Prisma client
+bun setup         # Interactive project setup
+bun seed          # Seed demo user
 bun db:push       # Push schema to database
 bun db:migrate    # Run migrations
-bun db:studio     # Open Prisma Studio
+bun db:studio     # Open Drizzle Studio
 ```
 
 ## Authentication
@@ -120,8 +118,7 @@ bun db:studio
 ### Schema Changes
 
 ```bash
-# After editing prisma/schema.prisma
-bun db:generate  # Regenerate client
+# After editing src/db/schema.ts
 bun db:push      # Push to database (dev)
 bun db:migrate   # Create migration (prod)
 ```
@@ -155,7 +152,6 @@ WORKDIR /app
 COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile
 COPY . .
-RUN bunx prisma generate
 RUN bun run build
 
 FROM oven/bun:1-slim

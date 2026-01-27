@@ -1,45 +1,47 @@
-#!/usr/bin/env bun
+import { db, user, account } from "../src/db";
+import { hashPassword } from "better-auth/crypto";
 
-import { PrismaClient } from "@prisma/client";
+async function seed() {
+  console.log("Seeding database...");
 
-const prisma = new PrismaClient();
+  // Create demo user
+  const hashedPassword = await hashPassword("demo1234");
 
-async function main() {
-  // Check if demo user already exists
-  const existingUser = await prisma.user.findUnique({
-    where: { email: "demo@example.com" },
-  });
+  const [demoUser] = await db
+    .insert(user)
+    .values({
+      id: "demo-user-id",
+      name: "Demo User",
+      email: "demo@example.com",
+      emailVerified: true,
+    })
+    .onConflictDoNothing()
+    .returning();
 
-  if (existingUser) {
+  if (demoUser) {
+    await db
+      .insert(account)
+      .values({
+        id: "demo-account-id",
+        accountId: "demo-user-id",
+        providerId: "credential",
+        userId: demoUser.id,
+        password: hashedPassword,
+      })
+      .onConflictDoNothing();
+
+    console.log("Demo user created:");
+    console.log("  Email: demo@example.com");
+    console.log("  Password: demo1234");
+  } else {
     console.log("Demo user already exists");
-    return;
   }
 
-  // Create demo user with Better Auth compatible password hash
-  // Password: demo1234
-  const hashedPassword = await Bun.password.hash("demo1234", {
-    algorithm: "bcrypt",
-    cost: 10,
-  });
-
-  await prisma.user.create({
-    data: {
-      email: "demo@example.com",
-      name: "Demo User",
-      emailVerified: true,
-      accounts: {
-        create: {
-          accountId: "demo-account",
-          providerId: "credential",
-          password: hashedPassword,
-        },
-      },
-    },
-  });
-
-  console.log("Demo user created successfully");
+  console.log("Seeding complete!");
+  process.exit(0);
 }
 
-main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect());
+seed().catch((error) => {
+  console.error("Seeding failed:", error);
+  process.exit(1);
+});
