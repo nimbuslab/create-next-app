@@ -26,12 +26,34 @@ async function fileExists(path: string): Promise<boolean> {
   }
 }
 
+async function isDockerInstalled(): Promise<boolean> {
+  try {
+    await $`docker --version`.quiet();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function isDockerRunning(): Promise<boolean> {
+  try {
+    await $`docker info`.quiet();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function main() {
   console.log();
   console.log(pc.cyan("  create-next-app setup"));
   console.log();
 
   p.intro(pc.bgCyan(pc.black(" Project Setup ")));
+
+  // Check Docker status
+  const dockerInstalled = await isDockerInstalled();
+  const dockerRunning = dockerInstalled && (await isDockerRunning());
 
   const config = await p.group(
     {
@@ -61,10 +83,26 @@ async function main() {
             { value: "none", label: "None", hint: "skip AI config" },
           ],
         }),
-      startDocker: () =>
-        p.confirm({
-          message: "Start PostgreSQL with Docker?",
-          initialValue: true,
+      dbOption: () =>
+        p.select({
+          message: "Database setup:",
+          options: dockerRunning
+            ? [
+                { value: "docker", label: "Docker (local)", hint: "recommended" },
+                { value: "cloud", label: "Cloud (Neon/Supabase)", hint: "configure .env manually" },
+                { value: "skip", label: "Skip", hint: "configure later" },
+              ]
+            : dockerInstalled
+              ? [
+                  { value: "docker", label: "Docker (local)", hint: "Docker not running" },
+                  { value: "cloud", label: "Cloud (Neon/Supabase)", hint: "recommended" },
+                  { value: "skip", label: "Skip", hint: "configure later" },
+                ]
+              : [
+                  { value: "install", label: "Install Docker", hint: "show instructions" },
+                  { value: "cloud", label: "Cloud (Neon/Supabase)", hint: "recommended" },
+                  { value: "skip", label: "Skip", hint: "configure later" },
+                ],
         }),
     },
     {
@@ -133,35 +171,85 @@ async function main() {
     s.stop(".env already exists");
   }
 
-  // Start Docker
-  if (config.startDocker) {
-    s.start("Starting PostgreSQL with Docker...");
-    try {
-      await $`docker compose up -d`.quiet();
-      s.stop("PostgreSQL started");
-      // Wait for DB to be ready
-      await Bun.sleep(2000);
-    } catch {
-      s.stop("Error starting Docker (is Docker running?)");
+  // Handle database setup based on option
+  let dbReady = false;
+
+  if (config.dbOption === "install") {
+    // Show Docker installation instructions
+    p.note(
+      `${pc.bold("Linux/WSL:")}
+  curl -fsSL https://get.docker.com | sh
+  sudo usermod -aG docker $USER
+  ${pc.dim("(logout and login again)")}
+
+${pc.bold("macOS:")}
+  brew install --cask docker
+  ${pc.dim("(or download from docker.com)")}
+
+${pc.bold("Windows:")}
+  Download Docker Desktop from docker.com
+
+${pc.dim("After installing, run:")} ${pc.cyan("bun setup")}`,
+      "Install Docker"
+    );
+  } else if (config.dbOption === "docker") {
+    if (!dockerRunning) {
+      p.log.warn("Docker is not running. Start Docker and run setup again.");
+      p.note(
+        `${pc.bold("Start Docker:")}
+  sudo systemctl start docker
+  ${pc.dim("or open Docker Desktop")}
+
+${pc.dim("Then run:")} ${pc.cyan("bun setup")}`,
+        "Docker not running"
+      );
+    } else {
+      s.start("Starting PostgreSQL with Docker...");
+      try {
+        await $`docker compose up -d`.quiet();
+        s.stop("PostgreSQL started");
+        // Wait for DB to be ready
+        await Bun.sleep(2000);
+        dbReady = true;
+      } catch {
+        s.stop("Error starting Docker");
+      }
     }
+  } else if (config.dbOption === "cloud") {
+    p.note(
+      `${pc.bold("1. Create a free database:")}
+  ${pc.cyan("https://neon.tech")} ${pc.dim("(recommended)")}
+  ${pc.cyan("https://supabase.com")}
+
+${pc.bold("2. Copy the connection string to .env:")}
+  DATABASE_URL="postgresql://user:pass@host/db"
+
+${pc.bold("3. Run migrations:")}
+  ${pc.cyan("bun db:push")}
+
+${pc.bold("4. Create demo user:")}
+  ${pc.cyan("bun seed")}`,
+      "Cloud Database Setup"
+    );
   }
 
-  // Run Drizzle migrations
-  s.start("Running database migrations...");
-  try {
-    await $`bunx drizzle-kit push`.quiet();
-    s.stop("Migrations complete");
-  } catch {
-    s.stop("Error running migrations (is DB running?)");
-  }
+  // Run migrations and seed if DB is ready
+  if (dbReady) {
+    s.start("Running database migrations...");
+    try {
+      await $`bunx drizzle-kit push`.quiet();
+      s.stop("Migrations complete");
+    } catch {
+      s.stop("Error running migrations");
+    }
 
-  // Seed demo user
-  s.start("Creating demo user...");
-  try {
-    await $`bun run scripts/seed.ts`.quiet();
-    s.stop("Demo user created");
-  } catch {
-    s.stop("Error creating demo user");
+    s.start("Creating demo user...");
+    try {
+      await $`bun run scripts/seed.ts`.quiet();
+      s.stop("Demo user created");
+    } catch {
+      s.stop("Error creating demo user");
+    }
   }
 
   p.outro(pc.green("Setup complete!"));
@@ -169,12 +257,25 @@ async function main() {
   console.log();
   console.log(pc.bold("Next steps:"));
   console.log();
-  console.log(`  ${pc.cyan("bun")} dev`);
-  console.log();
-  console.log(pc.bold("Demo credentials:"));
-  console.log();
-  console.log(`  Email: ${pc.cyan("demo@example.com")}`);
-  console.log(`  Password: ${pc.cyan("demo1234")}`);
+
+  if (!dbReady && config.dbOption !== "skip") {
+    console.log(`  ${pc.yellow("1.")} Configure database (see instructions above)`);
+    console.log(`  ${pc.yellow("2.")} ${pc.cyan("bun db:push")} - Run migrations`);
+    console.log(`  ${pc.yellow("3.")} ${pc.cyan("bun seed")} - Create demo user`);
+    console.log(`  ${pc.yellow("4.")} ${pc.cyan("bun dev")} - Start development`);
+  } else if (dbReady) {
+    console.log(`  ${pc.cyan("bun")} dev`);
+    console.log();
+    console.log(pc.bold("Demo credentials:"));
+    console.log();
+    console.log(`  Email: ${pc.cyan("demo@example.com")}`);
+    console.log(`  Password: ${pc.cyan("demo1234")}`);
+  } else {
+    console.log(`  ${pc.cyan("bun")} dev`);
+    console.log();
+    console.log(pc.dim("  Note: Configure database when ready"));
+  }
+
   console.log();
 }
 
