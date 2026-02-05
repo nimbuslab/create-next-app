@@ -1,24 +1,47 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Comfortaa, Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// nimbuslab branding fonts
+const comfortaa = Comfortaa({
+  variable: "--font-comfortaa",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Web App | Built with create-next-app",
+  title: "Landing Page | Built with create-next-landing",
   description:
-    "A modern web app built with Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, Better Auth, and Drizzle.",
-  keywords: ["web app", "nextjs", "react", "tailwind", "shadcn", "better-auth", "drizzle"],
+    "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
+  keywords: ["landing page", "nextjs", "react", "tailwind", "shadcn"],
   authors: [{ name: "nimbuslab", url: "https://nimbuslab.com.br" }],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    title: "Landing Page | Built with create-next-landing",
+    description:
+      "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
+    siteName: "Your Site Name",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Landing Page | Built with create-next-landing",
+    description:
+      "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
+  },
 };
 
 export default function RootLayout({
@@ -29,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+        className={`${inter.variable} ${comfortaa.variable} ${jetbrainsMono.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider
