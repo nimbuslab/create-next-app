@@ -139,7 +139,7 @@ export default async function Home() {
               href="https://nimbuslab.com.br"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline font-medium"
+              className="text-primary hover:underline font-medium font-heading"
             >
               nimbuslab
             </a>

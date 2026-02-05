@@ -46,8 +46,8 @@ export function DashboardContent({ user }: DashboardContentProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 font-heading">
+              <User className="h-5 w-5 stroke-primary" />
               Profile
             </CardTitle>
             <CardDescription>Your account information</CardDescription>
@@ -69,7 +69,7 @@ export function DashboardContent({ user }: DashboardContentProps) {
         </Card>
 
         <div className="mt-8 rounded-lg border bg-muted/50 p-6">
-          <h2 className="mb-2 text-lg font-semibold">Next steps</h2>
+          <h2 className="mb-2 text-lg font-semibold font-heading">Next steps</h2>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>Add more pages to your dashboard</li>
             <li>Connect to your database models</li>
