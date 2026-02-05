@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,13 +43,23 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
-          <CardDescription>
-            Enter your email and password to access your account
-          </CardDescription>
+    <div className="flex min-h-screen items-center justify-center px-4 bg-muted/30">
+      <Card className="w-full max-w-md border-2">
+        <CardHeader className="space-y-4 text-center">
+          <div className="flex justify-center">
+            <Image
+              src="/nimbuslab-symbol.svg"
+              alt="nimbuslab"
+              width={48}
+              height={48}
+            />
+          </div>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl font-bold font-heading">Sign in</CardTitle>
+            <CardDescription className="text-base">
+              Enter your email and password to access your account
+            </CardDescription>
+          </div>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
