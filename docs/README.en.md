@@ -234,7 +234,7 @@ Works on any platform that runs Next.js on Node, such as Vercel, Railway, or Ren
 
 1. Provision a PostgreSQL instance and get the connection string
 2. Set `DATABASE_URL`, `BETTER_AUTH_SECRET`, and `BETTER_AUTH_URL` in the environment
-3. Run `bun run db:migrate` against the production database
+3. Generate the migration with `bun run db:generate` and apply it with `bun run db:migrate` against the production database
 4. Deploy
 
 Generate the secret with:
