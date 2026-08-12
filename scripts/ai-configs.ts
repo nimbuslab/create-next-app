@@ -65,7 +65,7 @@ You are an expert in Next.js 16, React 19, TypeScript, Tailwind CSS 4, and shadc
 - React 19 with Server Components
 - TypeScript (strict mode)
 - Tailwind CSS 4 (CSS-first configuration)
-- shadcn/ui components (default style)
+- shadcn/ui components (new-york style)
 - Bun as package manager
 ${projectType === "app" ? "- Better Auth for authentication\n- Drizzle ORM with PostgreSQL" : ""}
 
@@ -177,7 +177,7 @@ ${getProjectDescription(projectType)}
 - **React:** 19 (Server Components)
 - **Language:** TypeScript (strict mode)
 - **Styling:** Tailwind CSS 4 (CSS-first)
-- **Components:** shadcn/ui (default style)
+- **Components:** shadcn/ui (new-york style)
 - **Package Manager:** Bun
 ${projectType === "app" ? "- **Auth:** Better Auth\n- **Database:** PostgreSQL + Drizzle" : ""}
 
