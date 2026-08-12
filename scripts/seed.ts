@@ -1,45 +1,47 @@
-#!/usr/bin/env bun
-
-import { db } from "../src/db";
-import { user, account } from "../src/db/schema";
-import { eq } from "drizzle-orm";
+import { db, user, account } from "../src/db";
 import { hashPassword } from "better-auth/crypto";
-import { randomUUID } from "crypto";
 
-async function main() {
-  // Check if demo user already exists
-  const existingUser = await db
-    .select()
-    .from(user)
-    .where(eq(user.email, "demo@example.com"))
-    .limit(1);
+async function seed() {
+  console.log("Seeding database...");
 
-  if (existingUser.length > 0) {
-    console.log("Demo user already exists");
-    return;
-  }
-
-  // Hash password using Better Auth's scrypt
+  // Create demo user
   const hashedPassword = await hashPassword("demo1234");
 
-  const userId = randomUUID();
+  const [demoUser] = await db
+    .insert(user)
+    .values({
+      id: "demo-user-id",
+      name: "Demo User",
+      email: "demo@example.com",
+      emailVerified: true,
+    })
+    .onConflictDoNothing()
+    .returning();
 
-  await db.insert(user).values({
-    id: userId,
-    email: "demo@example.com",
-    name: "Demo User",
-    emailVerified: true,
-  });
+  if (demoUser) {
+    await db
+      .insert(account)
+      .values({
+        id: "demo-account-id",
+        accountId: "demo-user-id",
+        providerId: "credential",
+        userId: demoUser.id,
+        password: hashedPassword,
+      })
+      .onConflictDoNothing();
 
-  await db.insert(account).values({
-    id: randomUUID(),
-    accountId: "demo-account",
-    providerId: "credential",
-    userId: userId,
-    password: hashedPassword,
-  });
+    console.log("Demo user created:");
+    console.log("  Email: demo@example.com");
+    console.log("  Password: demo1234");
+  } else {
+    console.log("Demo user already exists");
+  }
 
-  console.log("Demo user created successfully");
+  console.log("Seeding complete!");
+  process.exit(0);
 }
 
-main().catch(console.error);
+seed().catch((error) => {
+  console.error("Seeding failed:", error);
+  process.exit(1);
+});

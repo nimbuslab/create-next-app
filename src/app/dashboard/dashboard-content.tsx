@@ -5,6 +5,7 @@ import { signOut } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogOut, User } from "lucide-react";
+import Image from "next/image";
 
 interface DashboardContentProps {
   user: {
@@ -28,7 +29,15 @@ export function DashboardContent({ user }: DashboardContentProps) {
     <div className="container mx-auto px-4 py-16">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <Image
+              src="/nimbuslab-symbol.svg"
+              alt="nimbuslab"
+              width={32}
+              height={32}
+            />
+            <h1 className="text-3xl font-bold font-heading">Dashboard</h1>
+          </div>
           <Button variant="outline" onClick={handleSignOut}>
             <LogOut className="mr-2 h-4 w-4" />
             Sign out
@@ -37,8 +46,8 @@ export function DashboardContent({ user }: DashboardContentProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 font-heading">
+              <User className="h-5 w-5 stroke-primary" />
               Profile
             </CardTitle>
             <CardDescription>Your account information</CardDescription>
@@ -60,7 +69,7 @@ export function DashboardContent({ user }: DashboardContentProps) {
         </Card>
 
         <div className="mt-8 rounded-lg border bg-muted/50 p-6">
-          <h2 className="mb-2 text-lg font-semibold">Next steps</h2>
+          <h2 className="mb-2 text-lg font-semibold font-heading">Next steps</h2>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>Add more pages to your dashboard</li>
             <li>Connect to your database models</li>
