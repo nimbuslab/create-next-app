@@ -5,7 +5,7 @@
 **Template full-stack Next.js com autenticação, banco de dados e configuração pronta para agentes de IA.**
 Next.js 16 com App Router, React 19, Better Auth, Drizzle ORM sobre PostgreSQL e shadcn/ui.
 
-[Read in English](./README.en.md)
+[Read in English](./docs/README.en.md)
 
 [![CI](https://github.com/nimbuslab/create-next-app/actions/workflows/ci.yml/badge.svg)](https://github.com/nimbuslab/create-next-app/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-FF5500)](https://nextjs.org)
