@@ -84,7 +84,7 @@ ${projectType === "app" ? "- Auth config in src/lib/auth.ts\n- Database schema i
 
 ## Commands
 - bun dev - Start development
-- bun build - Production build
+- bun run build - Production build
 - bun lint - Run ESLint
 ${projectType === "app" ? "- bun db:push - Push schema to DB\n- bun db:studio - Open Drizzle Studio" : ""}
 
@@ -159,7 +159,7 @@ ${projectType === "app" ? "- src/db/ - Database schema (Drizzle)" : ""}
 
 Commands:
 - bun dev
-- bun build
+- bun run build
 - bun lint
 ${projectType === "app" ? "- bun setup (first time)" : ""}
 `,
@@ -212,7 +212,7 @@ ${getStructureInfo(projectType)}
 
 \`\`\`bash
 bun dev          # Start development
-bun build        # Production build
+bun run build    # Production build
 bun lint         # Run ESLint
 ${projectType === "app" ? "bun db:push      # Push schema to DB\nbun db:studio    # Open Drizzle Studio" : ""}
 \`\`\`
