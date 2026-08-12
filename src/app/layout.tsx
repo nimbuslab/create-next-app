@@ -23,24 +23,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Landing Page | Built with create-next-landing",
+  title: "Your App | Built with create-next-app",
   description:
-    "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
-  keywords: ["landing page", "nextjs", "react", "tailwind", "shadcn"],
+    "A full-stack app built with Next.js 16, React 19, Better Auth, Drizzle, and shadcn/ui.",
+  keywords: ["nextjs", "react", "tailwind", "shadcn", "better-auth", "drizzle"],
   authors: [{ name: "nimbuslab", url: "https://nimbuslab.com.br" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: "Landing Page | Built with create-next-landing",
+    title: "Your App | Built with create-next-app",
     description:
-      "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
-    siteName: "Your Site Name",
+      "A full-stack app built with Next.js 16, React 19, Better Auth, Drizzle, and shadcn/ui.",
+    siteName: "Your App Name",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Landing Page | Built with create-next-landing",
+    title: "Your App | Built with create-next-app",
     description:
-      "A modern landing page built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui.",
+      "A full-stack app built with Next.js 16, React 19, Better Auth, Drizzle, and shadcn/ui.",
   },
 };
 

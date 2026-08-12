@@ -1,354 +1,275 @@
+<div align="center">
+
 # create-next-app
 
-> Production-ready full-stack Next.js template with authentication, database, and AI-friendly documentation.
+**Template full-stack Next.js com autenticação, banco de dados e configuração pronta para agentes de IA.**
+Next.js 16 com App Router, React 19, Better Auth, Drizzle ORM sobre PostgreSQL e shadcn/ui.
 
-Build complete web applications with authentication, database, and best practices out of the box. Optimized for rapid development and production deployment.
+[Read in English](./docs/README.en.md)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/nimbuslab/create-next-app)
+[![CI](https://github.com/nimbuslab/create-next-app/actions/workflows/ci.yml/badge.svg)](https://github.com/nimbuslab/create-next-app/actions/workflows/ci.yml)
+[![Next.js](https://img.shields.io/badge/Next.js-16-FF5500)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-FF5500)](https://react.dev)
+[![licença](https://img.shields.io/badge/licen%C3%A7a-MIT-FF5500)](./LICENSE)
 
-[Leia em Português](./docs/README.pt-BR.md)
+[Instalação](#instalação) · [Quick start](#quick-start) · [Stack](#stack) · [Scripts](#scripts-disponíveis) · [Roadmap](#roadmap)
 
-## Features
+</div>
 
-✨ **Full-Stack Ready** - Auth, database, protected routes
-🔐 **Authentication** - Better Auth with email/password + OAuth ready
-💾 **Database** - PostgreSQL + Drizzle ORM (type-safe)
-🎨 **Modern UI** - Tailwind CSS 4 + shadcn/ui + dark mode
-🤖 **AI-Ready** - Auto-generated docs for Claude Code, Cursor, Copilot
-🐳 **Docker** - Local development with containers
-⚡ **Fast** - Server Components, Turbopack, optimized build
+---
 
-## Quick Start
+## Por que create-next-app
 
-### Using nimbuslab CLI (Recommended)
+- **Autenticação funcionando desde o primeiro `bun run dev`**: Better Auth com e-mail e senha, sessão com cache de cookie e `/dashboard` protegido no servidor
+- **Banco tipado de ponta a ponta**: Drizzle ORM sobre PostgreSQL, com todo o schema em um único arquivo
+- **Setup interativo**: detecta Docker, sobe o PostgreSQL, aplica o schema, cria o usuário de demonstração e, se você quiser, cria o repositório no GitHub
+- **Configuração para agentes de IA**: gera o arquivo de contexto do assistente que você usa, com a stack e as convenções do projeto já preenchidas
+- **Server Components por padrão**: `"use client"` só onde existe estado, evento ou API de navegador
+- **Tema escuro por padrão**: `next-themes` com alternância entre claro, escuro e a preferência do sistema
 
-The easiest way with interactive setup:
+## Instalação
+
+### Com a CLI da nimbuslab
 
 ```bash
-npx @nimbuslab/cli create my-app --app
-cd my-app
-bun setup  # Interactive database & auth setup
-bun dev
+bun add -g @nimbuslab/cli
+nimbus create meu-app --app
+cd meu-app
 ```
 
-This will:
-- Clone the template
-- Set up AI-friendly documentation
-- Configure authentication
-- Set up database (PostgreSQL)
-- Generate .env files
-- Initialize Git
-
-### Manual Setup
+### Clonando o template
 
 ```bash
-# Clone template
-bunx degit nimbuslab/create-next-app my-app
-cd my-app
+git clone --depth 1 https://github.com/nimbuslab/create-next-app.git meu-app
+cd meu-app
+rm -rf .git
+```
 
-# Install dependencies
+## Quick start
+
+Com o setup interativo, que cuida do banco e do arquivo `.env`:
+
+```bash
 bun install
-
-# Set up environment
-cp .env.example .env
-# Edit .env with your database credentials
-
-# Start database (Docker)
-docker compose up -d
-
-# Push database schema
-bun db:push
-
-# Seed database (optional)
-bun seed
-
-# Start development
-bun dev
+bun run setup
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and log in with:
-- Email: `demo@example.com`
-- Password: `demo1234`
+Se preferir fazer tudo na mão:
+
+```bash
+bun install
+cp .env.example .env
+docker compose up -d
+bun run db:push
+bun run seed
+bun run dev
+```
+
+Abra [http://localhost:3000](http://localhost:3000). O `bun run seed` cria um usuário de demonstração:
+
+- E-mail: `demo@example.com`
+- Senha: `demo1234`
 
 ## Stack
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **Next.js** | 16 | App Router, Server Components, Turbopack |
-| **React** | 19 | Latest features and performance |
-| **Better Auth** | Latest | Modern authentication solution |
-| **Drizzle ORM** | Latest | Type-safe database queries |
-| **PostgreSQL** | 16 | Production-ready relational database |
-| **Tailwind CSS** | 4 | Utility-first CSS framework |
-| **shadcn/ui** | Latest | Accessible UI components |
-| **TypeScript** | 5.7 | Full type safety (strict mode) |
-| **Docker** | Latest | Containerized development |
-| **Bun** | 1.0+ | Fast runtime and package manager |
+As versões abaixo são as declaradas no `package.json` e no `docker-compose.yml` deste repositório.
 
-## Project Structure
+| Peça | Versão | Papel |
+|---|---|---|
+| [Next.js](https://nextjs.org) | `16.3.0` | App Router, Server Components, Turbopack |
+| [React](https://react.dev) | `19.2.8` | Biblioteca de interface |
+| [TypeScript](https://www.typescriptlang.org) | `^5` | Tipagem estática em modo `strict` |
+| [Better Auth](https://better-auth.com) | `^1.3.10` | Autenticação e sessões |
+| [Drizzle ORM](https://orm.drizzle.team) | `^0.44.0` | Consultas tipadas |
+| [drizzle-kit](https://orm.drizzle.team/docs/kit-overview) | `^0.31.0` | Migrações e Drizzle Studio |
+| [PostgreSQL](https://www.postgresql.org) | `16-alpine` | Banco relacional (imagem do `docker-compose.yml`) |
+| [Tailwind CSS](https://tailwindcss.com) | `^4` | Estilização utilitária, configuração via CSS |
+| [shadcn/ui](https://ui.shadcn.com) | estilo `new-york` | Componentes acessíveis sobre Radix UI |
+| [Bun](https://bun.sh) | `1.3+` | Runtime e gerenciador de pacotes |
+
+O `package.json` não fixa a versão do Bun: `1.3+` é a faixa em que o template é desenvolvido e a CI usa a mais recente. O campo `engines` exige Node `>=18` para quem rodar o build fora do Bun.
+
+## Estrutura do projeto
 
 ```
-src/
-├── app/
-│   ├── (auth)/              # Auth pages (login, register)
-│   │   ├── login/
-│   │   └── register/
-│   ├── api/auth/            # Better Auth API routes
-│   ├── dashboard/           # Protected dashboard pages
-│   ├── layout.tsx           # Root layout with providers
-│   ├── page.tsx             # Public homepage
-│   └── globals.css          # Global styles + CSS variables
-├── components/
-│   ├── auth/                # Auth-related components
-│   ├── dashboard/           # Dashboard components
-│   └── ui/                  # shadcn/ui components
-├── lib/
-│   ├── auth.ts              # Better Auth configuration
-│   ├── db.ts                # Database client
-│   └── utils.ts             # Utility functions
-└── db/
-    ├── schema.ts            # Drizzle schema definitions
-    └── seed.ts              # Database seeding script
+.
+├── .github/workflows/ci.yml     # typecheck, lint e build
+├── docker-compose.yml           # PostgreSQL 16 local
+├── drizzle.config.ts            # configuração do drizzle-kit
+├── scripts/
+│   ├── ai-configs.ts            # modelos de config por assistente de IA
+│   ├── seed.ts                  # cria o usuário de demonstração
+│   └── setup.ts                 # assistente de configuração inicial
+└── src/
+    ├── app/
+    │   ├── (auth)/
+    │   │   ├── login/page.tsx
+    │   │   └── register/page.tsx
+    │   ├── api/auth/[...all]/route.ts   # handler do Better Auth
+    │   ├── dashboard/                    # rota protegida
+    │   ├── globals.css                   # tokens de tema
+    │   ├── layout.tsx
+    │   └── page.tsx                      # página pública
+    ├── components/
+    │   ├── theme-provider.tsx
+    │   └── ui/                           # componentes shadcn/ui
+    ├── db/
+    │   ├── index.ts             # cliente Drizzle e pool do pg
+    │   └── schema.ts            # tabelas user, session, account, verification
+    └── lib/
+        ├── auth.ts              # configuração do Better Auth (servidor)
+        ├── auth-client.ts       # cliente de autenticação (navegador)
+        └── utils.ts             # helper cn()
 ```
 
-## Available Scripts
+## Scripts disponíveis
+
+| Comando | O que faz |
+|---|---|
+| `bun run dev` | Servidor de desenvolvimento com Turbopack |
+| `bun run build` | Build de produção |
+| `bun run start` | Servidor de produção a partir do build |
+| `bun run lint` | Verifica o código com ESLint |
+| `bun run lint:fix` | Aplica as correções automáticas do ESLint |
+| `bun run typecheck` | `tsc --noEmit` |
+| `bun run setup` | Assistente de configuração inicial |
+| `bun run seed` | Cria o usuário de demonstração |
+| `bun run db:generate` | Gera arquivos de migração a partir do schema |
+| `bun run db:push` | Aplica o schema direto no banco (desenvolvimento) |
+| `bun run db:migrate` | Roda as migrações geradas (produção) |
+| `bun run db:studio` | Abre o Drizzle Studio |
+
+Use sempre `bun run <script>`. `bun build` sem o `run` chama o bundler do próprio Bun, não este script.
+
+## Banco de dados
+
+### Local, com Docker
 
 ```bash
-# Development
-bun dev           # Start development server
-bun build         # Build for production
-bun start         # Start production server
-
-# Database
-bun db:generate   # Generate Drizzle migrations
-bun db:push       # Push schema to database (dev)
-bun db:migrate    # Run migrations (production)
-bun db:studio     # Open Drizzle Studio (GUI)
-bun seed          # Seed database with demo data
-
-# Quality
-bun lint          # Run ESLint
-bun typecheck     # Run TypeScript check
-
-# Setup
-bun setup         # Interactive project setup
+docker compose up -d
+bun run db:push
+bun run seed
 ```
 
-## Authentication
+O `docker-compose.yml` sobe um PostgreSQL 16 em `localhost:5432` com usuário `postgres`, senha `postgres` e banco `app`. São credenciais de desenvolvimento local e não devem ir para produção. O `.env.example` já vem com a `DATABASE_URL` correspondente.
 
-Powered by [Better Auth](https://better-auth.com):
+### Provedor gerenciado
 
-### Features
-
-- ✅ Email/Password authentication
-- ✅ OAuth providers ready (Google, GitHub, etc)
-- ✅ Session management
-- ✅ Protected routes
-- ✅ User management
-- ✅ Password reset
-- ✅ Email verification (optional)
-
-### Configure OAuth (Optional)
-
-Add to `.env`:
-
-```env
-# Google OAuth
-GOOGLE_CLIENT_ID=your_client_id
-GOOGLE_CLIENT_SECRET=your_client_secret
-
-# GitHub OAuth
-GITHUB_CLIENT_ID=your_client_id
-GITHUB_CLIENT_SECRET=your_client_secret
-```
-
-Update `src/lib/auth.ts` to enable providers.
-
-## Database
-
-### Local Development (Docker)
+Serve qualquer PostgreSQL, como [Neon](https://neon.tech) ou [Supabase](https://supabase.com). Troque a `DATABASE_URL` no `.env` e rode as migrações:
 
 ```bash
-docker compose up -d     # Start PostgreSQL
-bun db:push              # Push schema
-bun seed                 # Add demo data
+bun run db:generate
+bun run db:migrate
 ```
 
-### Production (Neon, Supabase, etc)
+### Alterando o schema
 
-Update `.env`:
-
-```env
-DATABASE_URL=postgresql://user:pass@host:5432/db
-```
-
-Then run migrations:
+Edite `src/db/schema.ts` e depois:
 
 ```bash
-bun db:migrate
+bun run db:generate   # gera a migração
+bun run db:push       # ou aplique direto, em desenvolvimento
 ```
 
 ### Drizzle Studio
 
-Visual database editor:
-
 ```bash
-bun db:studio
+bun run db:studio
 ```
 
-Opens at [https://local.drizzle.studio](https://local.drizzle.studio)
+Abre em [https://local.drizzle.studio](https://local.drizzle.studio).
 
-## Adding Components
+## Autenticação
 
-Use shadcn/ui:
+Configurada em `src/lib/auth.ts` com [Better Auth](https://better-auth.com) e o adaptador do Drizzle.
+
+O que vem pronto:
+
+- Cadastro e login com e-mail e senha
+- Hash de senha com scrypt, o padrão do Better Auth
+- Sessão de 7 dias, renovada a cada 24 horas, com cache de cookie de 5 minutos
+- `/dashboard` protegido: `src/app/dashboard/page.tsx` lê a sessão no servidor e redireciona para `/login` quando não existe
+
+O que **não** vem pronto e está no [Roadmap](#roadmap): recuperação de senha, verificação de e-mail e provedores OAuth. Nenhum dos três está configurado no `auth.ts` e o template não traz provedor de e-mail.
+
+## Configuração para agentes de IA
+
+O `bun run setup` pergunta qual assistente você usa e gera o arquivo de contexto correspondente, com a stack, a estrutura de pastas e as convenções do projeto:
+
+| Assistente | Arquivo gerado |
+|---|---|
+| Claude Code | `CLAUDE.md` |
+| Cursor | `.cursorrules` |
+| Gemini CLI | `.gemini/GEMINI.md` |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| Windsurf | `.windsurfrules` |
+
+Os modelos ficam em `scripts/ai-configs.ts`.
+
+## Adicionando componentes
 
 ```bash
 bunx --bun shadcn@latest add dialog
 bunx --bun shadcn@latest add table
-bunx --bun shadcn@latest add dropdown-menu
 ```
 
-Browse: [ui.shadcn.com/docs/components](https://ui.shadcn.com/docs/components)
+O `components.json` já aponta para `src/components/ui` e para os tokens em `src/app/globals.css`.
 
-## Customization
+## Variáveis de ambiente
 
-### Theme
+Copie o `.env.example` para `.env` e ajuste. Nenhum outro arquivo `.env` entra no Git.
 
-Edit `src/app/globals.css`:
-- Colors (CSS variables)
-- Border radius
-- Fonts
+| Variável | Obrigatória | Descrição |
+|---|---|---|
+| `DATABASE_URL` | sim | String de conexão do PostgreSQL, lida por `src/db/index.ts` e por `drizzle.config.ts` |
+| `BETTER_AUTH_SECRET` | sim | Segredo de assinatura das sessões. Gere com `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | sim | URL pública da aplicação |
+| `NEXT_PUBLIC_APP_URL` | não | Base do cliente de autenticação. Sem ela, o padrão é `http://localhost:3000` |
+| `NODE_ENV` | não | `development` ou `production` |
 
-### Database Schema
+## Deploy
 
-Edit `src/db/schema.ts` and run:
+Funciona em qualquer plataforma que rode Next.js em Node, como Vercel, Railway ou Render. O caminho é o mesmo:
 
-```bash
-bun db:generate  # Generate migration
-bun db:push      # Apply changes
-```
+1. Provisione um PostgreSQL e pegue a connection string
+2. Configure `DATABASE_URL`, `BETTER_AUTH_SECRET` e `BETTER_AUTH_URL` no ambiente
+3. Gere a migração com `bun run db:generate` e aplique com `bun run db:migrate` contra o banco de produção
+4. Faça o deploy
 
-### Protected Routes
+Gere o segredo com:
 
-Add to `src/middleware.ts`:
-
-```typescript
-export const config = {
-  matcher: ['/dashboard/:path*', '/settings/:path*']
-}
-```
-
-## AI-Friendly Documentation
-
-When created via `@nimbuslab/cli`, includes:
-
-- **AGENTS.md** - Context for AI assistants
-- **llms.txt** - LLM indexing standard
-- **ARCHITECTURE.md** - Design decisions
-- **EXAMPLES.md** - Code examples
-- **.cursorrules** - Cursor AI config
-- **.github/copilot-instructions.md** - Copilot context
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push to GitHub
-2. Import in Vercel
-3. Add environment variables
-4. Deploy!
-
-Environment variables needed:
-```env
-DATABASE_URL=postgresql://...
-BETTER_AUTH_SECRET=generate_with_openssl
-BETTER_AUTH_URL=https://your-domain.com
-```
-
-Generate secret:
 ```bash
 openssl rand -base64 32
 ```
 
-### Docker (Self-hosted)
+## Roadmap
 
-```bash
-docker build -t my-app .
-docker run -p 3000:3000 \
-  -e DATABASE_URL=postgresql://... \
-  -e BETTER_AUTH_SECRET=... \
-  my-app
-```
+- [ ] Recuperação de senha
+- [ ] Verificação de e-mail
+- [ ] Provedores OAuth (Google e GitHub)
+- [ ] `src/middleware.ts` com o matcher das rotas protegidas
+- [ ] `Dockerfile` com `output: "standalone"` para self-hosting
+- [ ] Testes automatizados na CI
 
-### Railway / Render
+## Contribuindo
 
-Works out of the box. Add environment variables and deploy.
+Leia o [guia de contribuição](./CONTRIBUTING.md) antes de abrir um PR. Em resumo: branch a partir da `main`, commits em português seguindo Conventional Commits, e `bun run typecheck`, `bun run lint` e `bun run build` verdes antes de pedir revisão.
 
-## Environment Variables
+O [código de conduta](./CODE_OF_CONDUCT.md) vale para todo mundo que participa do projeto.
 
-```env
-# Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/myapp
+## Suporte
 
-# Auth
-BETTER_AUTH_SECRET=generate_with_openssl_rand_base64_32
-BETTER_AUTH_URL=http://localhost:3000
+Dúvidas, bugs e sugestões vão para as [Issues](https://github.com/nimbuslab/create-next-app/issues). Falhas de segurança seguem o processo descrito em [SECURITY.md](./SECURITY.md).
 
-# OAuth (optional)
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
-```
+## Licença
 
-## Examples
-
-Apps built with this template:
-
-- Coming soon!
-
-Want to add yours? [Open a PR](https://github.com/nimbuslab/create-next-app/pulls)
-
-## FAQ
-
-**Q: Can I use MySQL/SQLite instead of PostgreSQL?**
-A: Yes! Drizzle supports multiple databases. Update `src/lib/db.ts` accordingly.
-
-**Q: How do I add more OAuth providers?**
-A: Edit `src/lib/auth.ts` and add providers. Better Auth supports 20+ providers.
-
-**Q: Is the authentication secure?**
-A: Yes! Better Auth follows security best practices: bcrypt hashing, CSRF protection, secure sessions.
-
-**Q: Can I remove Docker?**
-A: Yes! Use any PostgreSQL instance. Update `DATABASE_URL` in `.env`.
-
-**Q: Is this production-ready?**
-A: Absolutely! Used in production by nimbuslab clients.
-
-## Contributing
-
-Contributions welcome!
-
-1. Fork the repo
-2. Create a feature branch
-3. Make your changes
-4. Submit a PR
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-## Support
-
-- 📖 [Documentation](https://github.com/nimbuslab/create-next-app)
-- 🐛 [Issues](https://github.com/nimbuslab/create-next-app/issues)
-- 💬 [Discussions](https://github.com/nimbuslab/create-next-app/discussions)
-
-## License
-
-MIT License - see [LICENSE](./LICENSE) for details.
+[MIT](./LICENSE) © [nimbuslab](https://nimbuslab.com.br)
 
 ---
 
-**Created by nimbuslab** - Building digital products with design and technology.
+<div align="center">
 
-Made with care in Brazil 🇧🇷
+Construído em Brasília, DF, Brasil
+
+</div>

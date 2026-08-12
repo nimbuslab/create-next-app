@@ -65,7 +65,7 @@ You are an expert in Next.js 16, React 19, TypeScript, Tailwind CSS 4, and shadc
 - React 19 with Server Components
 - TypeScript (strict mode)
 - Tailwind CSS 4 (CSS-first configuration)
-- shadcn/ui components (default style)
+- shadcn/ui components (new-york style)
 - Bun as package manager
 ${projectType === "app" ? "- Better Auth for authentication\n- Drizzle ORM with PostgreSQL" : ""}
 
@@ -84,7 +84,7 @@ ${projectType === "app" ? "- Auth config in src/lib/auth.ts\n- Database schema i
 
 ## Commands
 - bun dev - Start development
-- bun build - Production build
+- bun run build - Production build
 - bun lint - Run ESLint
 ${projectType === "app" ? "- bun db:push - Push schema to DB\n- bun db:studio - Open Drizzle Studio" : ""}
 
@@ -159,9 +159,79 @@ ${projectType === "app" ? "- src/db/ - Database schema (Drizzle)" : ""}
 
 Commands:
 - bun dev
-- bun build
+- bun run build
 - bun lint
 ${projectType === "app" ? "- bun setup (first time)" : ""}
+`,
+  },
+
+  gemini: {
+    filename: ".gemini/GEMINI.md",
+    content: (projectType: "landing" | "app" | "turborepo") => `# ${projectType === "landing" ? "create-next-landing" : projectType === "app" ? "create-next-app" : "create-turborepo"}
+
+${getProjectDescription(projectType)}
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **React:** 19 (Server Components)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS 4 (CSS-first)
+- **Components:** shadcn/ui (new-york style)
+- **Package Manager:** Bun
+${projectType === "app" ? "- **Auth:** Better Auth\n- **Database:** PostgreSQL + Drizzle" : ""}
+
+## Code Patterns
+
+### Server Components (Default)
+\`\`\`tsx
+// src/components/hero.tsx
+export function Hero() {
+  return <section>...</section>
+}
+\`\`\`
+
+### Client Components (When Needed)
+\`\`\`tsx
+"use client"
+// Only for: hooks, browser APIs, event handlers
+\`\`\`
+
+### Styling with Tailwind
+\`\`\`tsx
+import { cn } from "@/lib/utils"
+
+<div className={cn("base-classes", conditional && "extra")} />
+\`\`\`
+
+## Project Structure
+
+${getStructureInfo(projectType)}
+
+## Commands
+
+\`\`\`bash
+bun dev          # Start development
+bun run build    # Production build
+bun lint         # Run ESLint
+${projectType === "app" ? "bun db:push      # Push schema to DB\nbun db:studio    # Open Drizzle Studio" : ""}
+\`\`\`
+
+## Conventions
+
+- Use \`bun\` for all package operations
+- Components in PascalCase
+- Server Components by default
+- Dark mode first design
+- Use \`cn()\` for conditional classes
+- Add shadcn components: \`bunx --bun shadcn@latest add [component]\`
+
+## Resources
+
+- [Next.js Docs](https://nextjs.org/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [shadcn/ui](https://ui.shadcn.com)
+${projectType === "app" ? "- [Better Auth](https://better-auth.com)\n- [Drizzle](https://orm.drizzle.team)" : ""}
 `,
   },
 };
