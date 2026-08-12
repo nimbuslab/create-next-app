@@ -10,10 +10,12 @@ const ENV_TEMPLATE = `# Database
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app"
 
 # Better Auth
-BETTER_AUTH_SECRET="your-secret-key-change-in-production"
+# Generate a real secret with: openssl rand -base64 32
+BETTER_AUTH_SECRET="change-me-before-deploying"
 BETTER_AUTH_URL="http://localhost:3000"
 
 # App
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NODE_ENV="development"
 `;
 
