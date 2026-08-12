@@ -33,6 +33,6 @@ jobs:
       - name: Build
         run: bun run build
         env:
-          BETTER_AUTH_SECRET: ci-placeholder-secret-nao-usar-em-producao
+          BETTER_AUTH_SECRET: ci-placeholder-secret-not-for-production
           BETTER_AUTH_URL: http://localhost:3000
           NEXT_PUBLIC_APP_URL: http://localhost:3000
